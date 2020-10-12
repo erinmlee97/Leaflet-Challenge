@@ -18,7 +18,7 @@ var myMap = L.map("map", {
 
 // Use d3 to pull data from url
 d3.json(url, function(data){
-    function style(feature) {
+    function styles(feature) {
         return {
             opacity: 1,
             fillOpacity: 1,
@@ -40,17 +40,48 @@ d3.json(url, function(data){
     function chooseColor(mag){
         switch(true){
             case mag > 5:
-                return "990000";
-            case mag > 5:
-                return "990033";
-            case mag > 5:
-                return "990066";
-            case mag > 5:
-                return "990099";
-            case mag > 5:
-                return "9900CC";
+                return "#ea2c2c";
+            case mag > 4:
+                return "#eaa12c";
+            case mag > 3:
+                return "#eaea2c";
+            case mag > 2:
+                return "#6fea2c";
+            case mag > 1:
+                return "#2cdaea";
             default:
-                return "9900FF";
+                return "#a12cea";
         }
     }
-})
+
+    // Get GeoJson layer, create cirlces, and add information on earthquake
+    L.geoJson(data, {
+        pointToLayer: function(feature, coord){
+            return L.circleMarker(coord);
+        },
+        style: styles,
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(`Location: ${feature.properties.place} <hr> Magnitude: ${feature.properties.mag}`)
+        }
+    }).addTo(myMap)
+
+    // Create an object for the legend
+    var legend =L.control({
+        position: "bottomright"
+    });
+
+    // Add details for the legend
+    legend.onAdd = function(myMap){
+        var div = L.DomUtil.create("div", "legend");
+        var grades = [0,1,2,3,4,5];
+        var colors = ["#a12cea", "#2cdaea", "#6fea2c", "#eaea2c", "#eaa12c", "#ea2c2c"];
+        div.innerHTML = '<div><b>Legend</b></div>'
+        // Loop through color grades
+        for(var i = 0; i < grades.length; i++){
+            div.innerHTML += '<i style="background: ' + colors[i] + '"></i> ' + grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>': '+');
+        }
+        return div;
+    }
+    // Add legend to map
+    legend.addTo(myMap);
+});
