@@ -16,35 +16,41 @@ var myMap = L.map("map", {
     accessToken: API_KEY
   }).addTo(myMap);
 
-// Create function to change colors based on earthquake magnitude
-function chooseColor(mag){
-    switch(true){
-        case mag > 5:
-            return "990000";
-        case mag > 5:
-            return "990033";
-        case mag > 5:
-            return "990066";
-        case mag > 5:
-            return "990099";
-        case mag > 5:
-            return "9900CC";
-        default:
-            return "9900FF";
-    }
-}
-
 // Use d3 to pull data from url
 d3.json(url, function(data){
-    L.geoJson(data, {
-        style: function(feature) {
+    function style(feature) {
         return {
             opacity: 1,
             fillOpacity: 1,
             color: "white",
             fillColor: chooseColor(feature.properties.mag),
-            weight: 0.5
+            radius: radius(feature.properties.mag),
+            weight: 0.5,
+            stroke: true
         }
     }
-    })
+    // Create funtion to set radius from magnitude
+    function radius(mag){
+        if (mag === 0){
+            return 1;
+        }
+        return mag * 3;
+    }
+    // Create function to change color based on earthquake magnitude
+    function chooseColor(mag){
+        switch(true){
+            case mag > 5:
+                return "990000";
+            case mag > 5:
+                return "990033";
+            case mag > 5:
+                return "990066";
+            case mag > 5:
+                return "990099";
+            case mag > 5:
+                return "9900CC";
+            default:
+                return "9900FF";
+        }
+    }
 })
