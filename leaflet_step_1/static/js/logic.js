@@ -1,4 +1,4 @@
-var url = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php"
+var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
 // Creating map object
 var myMap = L.map("map", {
@@ -15,3 +15,33 @@ var myMap = L.map("map", {
     id: "mapbox/light-v10",
     accessToken: API_KEY
   }).addTo(myMap);
+
+// Create function to change colors based on earthquake magnitude
+function chooseColor(mag){
+    switch(true){
+        case mag > 5:
+            return "990000";
+        case mag > 5:
+            return "990033";
+        case mag > 5:
+            return "990066";
+        case mag > 5:
+            return "990099";
+        case mag > 5:
+            return "9900CC";
+        default:
+            return "9900FF";
+    }
+}
+
+// Use d3 to pull data from url
+d3.json(url, function(data){
+    function style(feature){
+        return {
+            opacity: 1,
+            fillOpacity: 1,
+            color: "white",
+            fillColor: chooseColor(feature.properties.mag),
+        }
+    }
+})
