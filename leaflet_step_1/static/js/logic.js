@@ -36,12 +36,15 @@ function chooseColor(mag){
 
 // Use d3 to pull data from url
 d3.json(url, function(data){
-    function style(feature){
+    L.geoJson(data, {
+        style: function(feature) {
         return {
             opacity: 1,
             fillOpacity: 1,
             color: "white",
             fillColor: chooseColor(feature.properties.mag),
+            weight: 0.5
         }
     }
+    })
 })
