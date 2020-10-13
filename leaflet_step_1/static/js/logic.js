@@ -16,6 +16,29 @@ var myMap = L.map("map", {
     accessToken: API_KEY
   }).addTo(myMap);
 
+  // Create function to change color based on earthquake magnitude
+  function getColor(mag) {
+    // Conditionals for magnitude
+    if (mag >= 5) {
+      return "#ea2c2c";
+    }
+    else if (mag >= 4) {
+      return "#eaa12c";
+    }
+    else if (mag >= 3) {
+     return "#eaea2c";
+    }
+    else if (mag >= 2) {
+      return "#6fea2c";
+    }
+    else if (mag >= 1) {
+      return "#2cdaea";
+    }
+    else {
+      return "#a12cea";
+    }
+};
+
 // Use d3 to pull data from url
 d3.json(url, function(data){
     function styles(feature) {
@@ -23,7 +46,7 @@ d3.json(url, function(data){
             opacity: 1,
             fillOpacity: 1,
             color: "white",
-            fillColor: chooseColor(feature.properties.mag),
+            fillColor: getColor(feature.properties.mag),
             radius: radius(feature.properties.mag),
             weight: 0.5,
             stroke: true
@@ -35,23 +58,6 @@ d3.json(url, function(data){
             return 1;
         }
         return mag * 3;
-    }
-    // Create function to change color based on earthquake magnitude
-    function chooseColor(mag){
-        switch(true){
-            case mag > 5:
-                return "#ea2c2c";
-            case mag > 4:
-                return "#eaa12c";
-            case mag > 3:
-                return "#eaea2c";
-            case mag > 2:
-                return "#6fea2c";
-            case mag > 1:
-                return "#2cdaea";
-            default:
-                return "#a12cea";
-        }
     }
 
     // Get GeoJson layer, create cirlces, and add information on earthquake
@@ -69,19 +75,24 @@ d3.json(url, function(data){
     var legend =L.control({
         position: "bottomright"
     });
-
+    
     // Add details for the legend
-    legend.onAdd = function(myMap){
-        var div = L.DomUtil.create("div", "legend");
-        var grades = [0,1,2,3,4,5];
-        var colors = ["#a12cea", "#2cdaea", "#6fea2c", "#eaea2c", "#eaa12c", "#ea2c2c"];
-        div.innerHTML = '<div><b>Legend</b></div>'
-        // Loop through color grades
-        for(var i = 0; i < grades.length; i++){
-            div.innerHTML += '<i style="background: ' + colors[i] + '"></i> ' + grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>': '+');
-        }
+    legend.onAdd = () => {
+        var div = L.DomUtil.create('div', 'info legend');
+        var magnitudes = [0, 1, 2, 3, 4, 5];
+    
+        magnitudes.forEach(m => {
+          var range = `${m} - ${m+0.25}`;
+          if (m >= 5) {range = `${m}+`}
+          var html = `<div class="legend-item">
+                <div style="height: 25px; width: 25px; background-color:${getColor(m)}"> </div>
+                <div class=legend-text>Magnitude:- <strong>${range}</strong></div>
+            </div>`
+          div.innerHTML += html
+        });
         return div;
     }
     // Add legend to map
     legend.addTo(myMap);
 });
+
