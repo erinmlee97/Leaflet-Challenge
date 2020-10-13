@@ -57,7 +57,7 @@ d3.json(url, function(data){
         if (mag === 0){
             return 1;
         }
-        return mag * 3;
+        return mag * 5;
     }
 
     // Get GeoJson layer, create cirlces, and add information on earthquake
@@ -80,13 +80,13 @@ d3.json(url, function(data){
     legend.onAdd = () => {
         var div = L.DomUtil.create('div', 'info legend');
         var magnitudes = [0, 1, 2, 3, 4, 5];
-    
+        // For each magnitude append div with color and range 
         magnitudes.forEach(m => {
-          var range = `${m} - ${m+0.25}`;
+          var range = `${m} - ${m+1}`;
           if (m >= 5) {range = `${m}+`}
           var html = `<div class="legend-item">
                 <div style="height: 25px; width: 25px; background-color:${getColor(m)}"> </div>
-                <div class=legend-text>Magnitude:- <strong>${range}</strong></div>
+                <div <strong>${range}</strong></div>
             </div>`
           div.innerHTML += html
         });
