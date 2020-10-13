@@ -8,3 +8,40 @@ body,
 html {
   height: 100%;
 }
+
+.legend-item{
+  width: 60px;
+  height: 20px;
+  margin-right: 25px;
+}
+
+
+.mag{
+  margin-left: 5px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.legend {
+  padding: 6px 8px 8px 6px;
+  font: 12px Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: black;
+  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.colors{
+  margin-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.legendtext{
+  margin-left: 7px;
+}
+
+
+

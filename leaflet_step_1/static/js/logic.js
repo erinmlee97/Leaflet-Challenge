@@ -75,21 +75,25 @@ d3.json(url, function(data){
     var legend =L.control({
         position: "bottomright"
     });
-    
+
     // Add details for the legend
     legend.onAdd = () => {
         var div = L.DomUtil.create('div', 'info legend');
         var magnitudes = [0, 1, 2, 3, 4, 5];
+        var headDiv= `<h3 class="mag">Magnitude</h3>`
+        div.innerHTML += headDiv
         // For each magnitude append div with color and range 
         magnitudes.forEach(m => {
-          var range = `${m} - ${m+1}`;
-          if (m >= 5) {range = `${m}+`}
-          var html = `<div class="legend-item">
-                <div style="height: 25px; width: 25px; background-color:${getColor(m)}"> </div>
-                <div <strong>${range}</strong></div>
-            </div>`
-          div.innerHTML += html
+        var range = `${m} - ${m+1}`;
+        if (m >= 5) {range = `${m}+`}
+        var html = `<div class="legend-item">
+                        <div class="colors" style="background-color:${getColor(m)}"> 
+                                <strong class="legendtext">${range}</strong>
+                        </div>
+                    </div>`
+        div.innerHTML += html
         });
+        
         return div;
     }
     // Add legend to map
