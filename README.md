@@ -15,4 +15,4 @@ Using the fault line data, I was able to create lines on the map that show where
 ![part1](step1.png)
 
 ## Part 2
-1[part2](step2.png)
+![part2](step2.png)
