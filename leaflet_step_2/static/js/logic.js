@@ -1,21 +1,72 @@
 var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 var url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_plates.json"
 
-// Creating map object
-var myMap = L.map("map", {
-    center: [38.8375, -110.8958],
-    zoom: 5
-  });
-  
+function createMap(earthquakes){
   // Adding tile layer to the map
-  L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+  var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+    tileSize: 512,
+    maxZoom: 18,
+    zoomOffset: -1,
+    id: "mapbox/satellite-v9",
+    accessToken: API_KEY
+  })
+
+  var streets = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+    tileSize: 512,
+    maxZoom: 18,
+    zoomOffset: -1,
+    id: "mapbox/streets-v11",
+    accessToken: API_KEY
+  })
+
+  var outdoors = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+    tileSize: 512,
+    maxZoom: 18,
+    zoomOffset: -1,
+    id: "mapbox/outdoors-v11",
+    accessToken: API_KEY
+  })
+
+  var light = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
     attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
     tileSize: 512,
     maxZoom: 18,
     zoomOffset: -1,
     id: "mapbox/light-v10",
     accessToken: API_KEY
-  }).addTo(myMap);
+  })
+
+    // Create a faultline layer
+    var faultLine = new L.LayerGroup();
+
+    // Base map layer
+    var baseMap= {
+        "Satellite": satellite,
+        "Streets": streets,
+        "Outdoors": outdoors,
+        "Light": light
+    }
+
+    // Overlay layer
+    var overlayMaps = {
+        Earthquakes: earthquakes,
+        FaultLines: faultLine
+    }
+
+    // Creating map object
+    var myMap = L.map("map", {
+        center: [38.8375, -110.8958],
+        zoom: 5,
+        layers: [satellite, earthquakes, faultLine]
+    });
+
+    // Add baseMap and overlayMaps to myMap
+    L.control.layers(baseMap, overlayMaps, {
+        collapsed: false
+      }).addTo(myMap);
 
   // Create function to change color based on earthquake magnitude
   function getColor(mag) {
@@ -96,3 +147,4 @@ d3.json(url, function(data){
     // Add legend to map
     legend.addTo(myMap);
 });
+}
